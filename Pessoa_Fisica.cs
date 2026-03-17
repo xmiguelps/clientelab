@@ -12,14 +12,24 @@ namespace ClienteLab
 
         public string Rg {get; set;}
 
-        public Pessoa_Fisica(int id, string nome, string endereco, double valor_compra, double valor_imposto, double total)
+        public Pessoa_Fisica(string nome, string endereco, string cpf, string rg)
         {
-            Id = id;
             Nome = nome;
             Endereco = endereco;
-            Valor_Compra = valor_compra;
-            Valor_Imposto = valor_imposto;
-            Total = total;
+            Cpf = cpf;
+            Rg = rg;
+        }
+
+        public Pessoa_Fisica()
+        {
+            Id = -1;
+            Nome = "";
+            Endereco = "";
+            Valor_Compra = -1;
+            Valor_Imposto = -1;
+            Total = -1;
+            Cpf = "";
+            Rg = "";
         }
     }
 } 

@@ -11,20 +11,30 @@ namespace ClienteLab
 
         public string Ie {get; set;}
 
-        public Pessoa_Juridica(int id, string nome, string endereco, double valor_compra, double valor_imposto, double total)
-        {
-            Id = id;
-            Nome = nome;
-            Endereco = endereco;
-            Valor_Compra = valor_compra;
-            Valor_Imposto = valor_imposto;
-            Total = total;
-        }
-
         public override double Pagar_Imposto(double valor)
         {
             valor = Valor_Compra * 0.20;
             return valor;
+        }
+
+        public Pessoa_Juridica(string nome, string endereco, string cnpj, string ie)
+        {
+            Nome = nome;
+            Endereco = endereco;
+            Cnpj = cnpj;
+            Ie = ie;
+        }
+
+        public Pessoa_Juridica()
+        {
+            Id = -1;
+            Nome = "";
+            Endereco = "";
+            Valor_Compra = -1;
+            Valor_Imposto = -1;
+            Total = -1;
+            Cnpj = "";
+            Ie = "";
         }
     }
 }
