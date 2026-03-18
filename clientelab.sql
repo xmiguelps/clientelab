@@ -26,5 +26,5 @@ CREATE TABLE tb_vendas (
     valor_compra DOUBLE NOT NULL,
     valor_imposto DOUBLE NOT NULL,
     valor_total DOUBLE NOT NULL,
-    data_hora_venda DATETIME
+    data_hora_venda DATETIME DEFAULT CURRENT_TIMESTAMP
 )

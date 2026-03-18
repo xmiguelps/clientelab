@@ -21,7 +21,7 @@ namespace ClienteLab
 
         public virtual double Pagar_Imposto(double valor)
         {
-            valor = Valor_Compra * 0.10;
+            valor = valor * 0.10;
             return valor;
         }
     }

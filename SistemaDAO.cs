@@ -33,6 +33,8 @@ namespace ClienteLab
                 }
             }
             Console.WriteLine("[!] (Pessoa Física) cadastrado com sucesso!");
+            Console.WriteLine("Aperte qualquer tecla para voltar ao menu.");
+            Console.ReadKey();
         }
 
         public void CadastrarClientePJ(Pessoa_Juridica cliente)
@@ -46,14 +48,18 @@ namespace ClienteLab
                     comando.Parameters.AddWithValue("@endereco", cliente.Endereco);
                     comando.Parameters.AddWithValue("@cpf", cliente.Cnpj);
                     comando.Parameters.AddWithValue("@rg", cliente.Ie);
+                    comando.Parameters.AddWithValue("@cnpj", cliente.Cnpj);
+                    comando.Parameters.AddWithValue("@ie", cliente.Ie);
                     conexao.Open();
                     comando.ExecuteNonQuery();
                 }
             }
             Console.WriteLine("[!] (Pessoa Jurídica) cadastrado com sucesso!");
+            Console.WriteLine("Aperte qualquer tecla para voltar ao menu.");
+            Console.ReadKey();
         }
 
-        public void RegistrarVenda(int num, int id, double valor_compra)
+        public void RegistrarVenda(string option, int id, double valor_compra)
         {
             using (var conexao = _conexaoBanco.ObterConexao())
             {
@@ -61,17 +67,17 @@ namespace ClienteLab
                 string query_venda = "";
                 string query_recibo = "";
                 
-                switch (num)
+                switch (option)
                 {
-                    case 1:
+                    case "f":
                         cliente = new Pessoa_Fisica();
                         query_venda = "INSERT INTO tb_vendas (fk_cliente_pf, valor_compra, valor_imposto, valor_total) VALUES (@id, @valor_compra, @valor_imposto, @valor_total)";
-                        query_recibo = "SELECT (nome, endereco, cpf, rg) WHERE tb_cliente_pf id = @id";
+                        query_recibo = "SELECT nome, endereco, cpf, rg FROM tb_cliente_pf WHERE id_cliente_pf = @id";
                         break;
-                    case 2:
+                    case "j":
                         cliente = new Pessoa_Juridica(); 
                         query_venda = "INSERT INTO tb_vendas (fk_cliente_pj, valor_compra, valor_imposto, valor_total) VALUES (@id, @valor_compra, @valor_imposto, @valor_total)";
-                        query_recibo = "SELECT (nome, endereco, cnpj, ie) FROM tb_cliente_pj WHERE id = @id";
+                        query_recibo = "SELECT nome, endereco, cnpj, ie FROM tb_cliente_pj WHERE id_cliente_pj = @id";
                         break;
                     
                     default:
@@ -103,16 +109,12 @@ namespace ClienteLab
                     
                 }
 
-                double imposto = cliente.Pagar_Imposto(valor_compra);
-                double total = valor_compra + imposto; 
-
                 using (var comando = new MySqlCommand(query_venda, conexao))
                 {
                     comando.Parameters.AddWithValue("@id", id);
                     comando.Parameters.AddWithValue("@valor_compra", valor_compra);
                     comando.Parameters.AddWithValue("@valor_imposto", cliente.Pagar_Imposto(valor_compra));
                     comando.Parameters.AddWithValue("@valor_total", valor_compra + cliente.Pagar_Imposto(valor_compra));
-                    conexao.Open();
                     comando.ExecuteNonQuery();
                 }
 
@@ -133,14 +135,16 @@ namespace ClienteLab
                 Console.WriteLine($"Valor de Compra: R$ {valor_compra.ToString("N2", new CultureInfo("pt-BR"))}");
                 if (cliente is Pessoa_Fisica)
                 {
-                    Console.WriteLine($"Imposto (10%): R$ {valor_compra.ToString("N2", new CultureInfo("pt-BR"))}");
+                    Console.WriteLine($"Imposto (10%): R$ {cliente.Pagar_Imposto(valor_compra).ToString("N2", new CultureInfo("pt-BR"))}");
                 } else if (cliente is Pessoa_Juridica)
                 {
-                    Console.WriteLine($"Imposto (20%).: R$ {valor_compra.ToString("N2", new CultureInfo("pt-BR"))}");
+                    Console.WriteLine($"Imposto (20%).: R$ {cliente.Pagar_Imposto(valor_compra).ToString("N2", new CultureInfo("pt-BR"))}");
                 }
-                Console.WriteLine($"Total a Pagar.: R$ {valor_compra.ToString("N2", new CultureInfo("pt-BR"))}");
+                Console.WriteLine($"Total a Pagar.: R$ {(valor_compra + cliente.Pagar_Imposto(valor_compra)).ToString("N2", new CultureInfo("pt-BR"))}");
                 Console.WriteLine("---------------------------------------");
-                Console.WriteLine("[!] Venda registrada no banco de dados com sucesso!");
+                Console.WriteLine("\n[!] Venda registrada no banco de dados com sucesso!");
+                Console.WriteLine("Aperte qualquer tecla para voltar ao menu.");
+                Console.ReadKey();
             }      
         }
 
@@ -153,7 +157,7 @@ namespace ClienteLab
                     v.id_vendas, 
                     v.data_hora_venda,
                     CASE
-                        WHEN v.fk_client_pf IS NOT NULL THEN 'PF'
+                        WHEN v.fk_cliente_pf IS NOT NULL THEN 'PF'
                         WHEN v.fk_cliente_pj IS NOT NULL THEN 'PJ'
                     END AS tipo,
                     COALESCE(f.nome, j.nome) AS cliente,
@@ -173,13 +177,26 @@ namespace ClienteLab
                     using (var reader = comando.ExecuteReader())
                     {
                         int count = 0;
+                        Console.WriteLine("------------------------------------------------------------------------------------------------------------------------------------");
+                        Console.WriteLine($"| {"ID Venda",-8} | {"Data e Hora",-20} | {"Tipo",-6} | {"Cliente",-30} | {"Valor Compra",-15} | {"Imposto",-15} | {"Total a Pagar",-15} |");
+                        Console.WriteLine("------------------------------------------------------------------------------------------------------------------------------------");
                         while (reader.Read())
                         {
-                            Console.WriteLine($"ID Venda {reader["id_vendas"]} | Data e Hora {reader["data_hora_venda"]} | Tipo {reader["tipo"]} | Cliente {reader["cliente"]} | Valor Compra {reader["valor_compra"]} | Imposto {reader["valor_imposto"]} | Total a Pagar {reader["valor_total"]}");
+                            Console.WriteLine(
+                                $"| {reader["id_vendas"],-8} " +
+                                $"| {reader["data_hora_venda"],-20} " +
+                                $"| {reader["tipo"],-6} " +
+                                $"| {reader["cliente"],-30} " +
+                                $"| {Convert.ToDouble(reader["valor_compra"]).ToString("C2", new CultureInfo("pt-BR")),-15} " +
+                                $"| {Convert.ToDouble(reader["valor_imposto"]).ToString("C2", new CultureInfo("pt-BR")),-15} " +
+                                $"| {Convert.ToDouble(reader["valor_total"]).ToString("C2", new CultureInfo("pt-BR")),-15}"
+                            );
                             count ++;
                         }
-                        Console.WriteLine($"Total de registros: {count}");
+                        Console.WriteLine($"\nTotal de registros: {count}");
                     }
+                    Console.WriteLine("Aperte qualquer tecla para voltar ao menu.");
+                    Console.ReadKey();
                 }
             }
         }
@@ -196,7 +213,7 @@ namespace ClienteLab
                     v.id_vendas, 
                     v.data_hora_venda,
                     CASE
-                        WHEN v.fk_client_pf IS NOT NULL THEN 'PF'
+                        WHEN v.fk_cliente_pf IS NOT NULL THEN 'PF'
                         WHEN v.fk_cliente_pj IS NOT NULL THEN 'PJ'
                     END AS tipo,
                     COALESCE(f.nome, j.nome) AS cliente,
@@ -226,6 +243,8 @@ namespace ClienteLab
             File.WriteAllText(path, conteudoCSV);
 
             Console.WriteLine($"[!] Sucesso! Arquivo gerado: {Path.GetFullPath(path)}");
+            Console.WriteLine("Aperte qualquer tecla para voltar ao menu.");
+            Console.ReadKey();
         }
     }
 }

@@ -13,7 +13,7 @@ namespace ClienteLab
 
         public override double Pagar_Imposto(double valor)
         {
-            valor = Valor_Compra * 0.20;
+            valor = valor * 0.20;
             return valor;
         }
 

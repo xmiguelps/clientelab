@@ -7,6 +7,8 @@ using ZstdSharp.Unsafe;
 int num = 0;
 SistemaDAO sys = new SistemaDAO();
 
+while (num != 5)
+{
 Console.WriteLine("===========================================");
 Console.WriteLine("       SISTEMA DE GESTÃO - CLIENTLAB       ");
 Console.WriteLine("===========================================");
@@ -18,109 +20,77 @@ Console.WriteLine("5. Sair do Sistema");
 Console.WriteLine("===========================================");
 Console.Write("Escolha um opção: ");
 num = int.Parse(Console.ReadLine());
-while (num != 5)
+string nome = "";
+string endereco = "";
+switch (num)
 {
-    string nome = "";
-    string endereco = "";
-    switch (num)
-    {
-        case 1:
-            string escolha_cad = "";
-            Console.WriteLine("--- CADASTRO DE CLIENTE ---");
-            Console.Write("Pessoa Física (f) ou Jurídica (j)? ");
-            escolha_cad = Console.ReadLine();
-            while (escolha_cad != "j" || escolha_cad != "f")
+    case 1:
+        Console.WriteLine("--- CADASTRO DE CLIENTE ---");
+        Console.Write("Pessoa Física (f) ou Jurídica (j)? ");
+        string escolha_cad = Console.ReadLine();
+                switch (escolha_cad)
                 {
-                    switch (escolha_cad)
-                    {
-                        case "f":
-                            Console.Write("Informar Nome: ");
-                            nome = Console.ReadLine();
-                            Console.Write("Informar Endereco: ");
-                            endereco = Console.ReadLine();
-                            Console.Write("Informar CPF: ");
-                            string cpf = Console.ReadLine();
-                            Console.Write("Informar RG: ");
-                            string rg = Console.ReadLine();
-                            Pessoa_Fisica clientef = new Pessoa_Fisica(nome, endereco, cpf, rg);
-                            
-                            sys.CadastrarClientePF(clientef);
-                            break;
-
-                        case "j":
-                            Console.Write("Informar Nome: ");
-                            nome = Console.ReadLine();
-                            Console.Write("Informar Endereco: ");
-                            endereco = Console.ReadLine();
-                            Console.Write("Informar CNPJ: ");
-                            string cnpj = Console.ReadLine();
-                            Console.Write("Informar IE: ");
-                            string ie = Console.ReadLine();
-                            Pessoa_Juridica clientej = new Pessoa_Juridica(nome, endereco, cnpj, ie);
-                            
-                            sys.CadastrarClientePJ(clientej);
-                            break;
-
-                        default:
-                            Console.WriteLine("Digite algo que corresponda as duas opções");
-                            break;
-                    }
-                }
-            break;
-    
-    case 2:
-        string escolha_vend = "";
-        Console.WriteLine("--- REGISTRO DE VENDA ---");
-        Console.Write("A venda será para Pessoa Física (f) ou Jurídica (j)? ");
-        escolha_vend = Console.ReadLine();
-        while (escolha_vend != "j" || escolha_vend != "f")
-            {   
-                double valor_compra = 0;
-                int id = -1;
-                switch (escolha_vend)
-                {
-                    case "j":
-                        while (id < 0)
-                        {
-                            Console.Write("Informe o ID do Cliente: ");
-                            id = int.Parse(Console.ReadLine());
-                            if (id < 0)
-                            {
-                                Console.WriteLine("O ID não pode ser negativo, Tente Novamente");
-                                Console.WriteLine("\n----------------------------");
-                            }
-                        }
+                    case "f":
+                        Console.Write("Informar Nome: ");
+                        nome = Console.ReadLine();
+                        Console.Write("Informar Endereco: ");
+                        endereco = Console.ReadLine();
+                        Console.Write("Informar CPF: ");
+                        string cpf = Console.ReadLine();
+                        Console.Write("Informar RG: ");
+                        string rg = Console.ReadLine();
+                        Pessoa_Fisica clientef = new Pessoa_Fisica(nome, endereco, cpf, rg);
                         
+                        sys.CadastrarClientePF(clientef);
                         break;
 
-                    case "f":
-                        while (id < 0)
-                        {
-                            Console.Write("Informe o ID do Cliente: ");
-                            id = int.Parse(Console.ReadLine());
-                            if (id < 0)
-                            {
-                                Console.WriteLine("O ID não pode ser negativo, Tente Novamente");
-                                Console.WriteLine("\n----------------------------");
-                            }
-                        }
-                        while (valor_compra < 0)
-                        {
-                            Console.Write("Informe Valor da Compra: ");
-                            valor_compra = double.Parse(Console.ReadLine());
-                            if (valor_compra < 0)
-                            {
-                                Console.WriteLine("O Valor da compra não pode ser negativo, Tente Novamente");
-                                Console.WriteLine("\n----------------------------");
-                            }
-                        }
+                    case "j":
+                        Console.Write("Informar Nome: ");
+                        nome = Console.ReadLine();
+                        Console.Write("Informar Endereco: ");
+                        endereco = Console.ReadLine();
+                        Console.Write("Informar CNPJ: ");
+                        string cnpj = Console.ReadLine();
+                        Console.Write("Informar IE: ");
+                        string ie = Console.ReadLine();
+                        Pessoa_Juridica clientej = new Pessoa_Juridica(nome, endereco, cnpj, ie);
+                        
+                        sys.CadastrarClientePJ(clientej);
                         break;
 
                     default:
                         Console.WriteLine("Digite algo que corresponda as duas opções");
                         break;
                 }
-            }
+        break;
+    
+    case 2:
+        Console.WriteLine("--- REGISTRO DE VENDA ---");
+        Console.Write("A venda será para Pessoa Física (f) ou Jurídica (j)? ");
+        string escolha_vend = Console.ReadLine();  
+                double valor_compra = -1;
+                int id = -1;
+                while (id < 0)
+                {
+                    Console.Write("Informe o ID do Cliente: ");
+                    id = int.Parse(Console.ReadLine());
+                    if (id < 0)
+                    {
+                        Console.WriteLine("O ID não pode ser negativo, Tente Novamente");
+                        Console.WriteLine("\n----------------------------");
+                    }
+                }
+                while (valor_compra < 0)
+                {
+                    Console.Write("Informe Valor da Compra: ");
+                    valor_compra = double.Parse(Console.ReadLine());
+                    if (valor_compra < 0)
+                    {
+                        Console.WriteLine("O Valor da compra não pode ser negativo, Tente Novamente");
+                        Console.WriteLine("\n----------------------------");
+                    }
+                }
+                sys.RegistrarVenda(escolha_vend, id, valor_compra);
         
         break;
 
@@ -134,10 +104,10 @@ while (num != 5)
         Console.WriteLine("Conectando ao banco de dados...");
         Console.WriteLine("Coletando histórico de Pessoa Física e Jurídica...");
         Console.WriteLine("Formatando dados...");
+        sys.GerarRelatorioCSV();
         break;
 
     case 5:
-        Console.WriteLine("Saindo...");
         break;
 
     default:
@@ -145,3 +115,4 @@ while (num != 5)
         break;
     }
 }
+Console.WriteLine("Saindo...");
