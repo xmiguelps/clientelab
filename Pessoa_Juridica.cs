@@ -14,6 +14,7 @@ namespace ClienteLab
         public override double Pagar_Imposto(double valor)
         {
             valor = valor * 0.20;
+            valor = Math.Round(valor);
             return valor;
         }
 

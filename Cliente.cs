@@ -22,6 +22,7 @@ namespace ClienteLab
         public virtual double Pagar_Imposto(double valor)
         {
             valor = valor * 0.10;
+            valor = Math.Round(valor);
             return valor;
         }
     }
