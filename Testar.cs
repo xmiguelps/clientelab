@@ -7,18 +7,18 @@ using Xunit;
 
 namespace ClienteLab
 {
-    public class TestCalcImpostoPF
-    {
-        [Fact]
-        public void Test()
-        {
-            Pessoa_Fisica pessoa = new Pessoa_Fisica();
-            double valor = 2500;
-            double imposto = pessoa.Pagar_Imposto(valor);
-            double resultado = valor + imposto;
-            Assert.Equal(2750, resultado);
-        }
-    }
+    // public class TestCalcImpostoPF
+    // {
+    //     [Fact]
+    //     public void Test()
+    //     {
+    //         Pessoa_Fisica pessoa = new Pessoa_Fisica();
+    //         double valor = 2500;
+    //         double imposto = pessoa.Pagar_Imposto(valor);
+    //         double resultado = valor + imposto;
+    //         Assert.Equal(2750, resultado);
+    //     }
+    // }
 
     // public class TestCalcImpostoPJ
     // {
@@ -70,21 +70,21 @@ namespace ClienteLab
     //         double valor = 100.50;
     //         double imposto = pessoa.Pagar_Imposto(valor);
     //         double resultado = valor + imposto;
-    //         Assert.Equal(111, resultado);
+    //         Assert.Equal(110.50, resultado);
     //     }
     // }
 
-    // public class TestCalcImpostoPJDec
-    // {
-    //     [Fact]
+    public class TestCalcImpostoPJDec
+    {
+        [Fact]
 
-    //     public void Test()
-    //     {
-    //         Pessoa_Juridica pessoa = new Pessoa_Juridica();
-    //         double valor = 100.50;
-    //         double imposto = pessoa.Pagar_Imposto(valor);
-    //         double resultado = valor + imposto;
-    //         Assert.Equal(12, resultado);
-    //     }
-    // }
+        public void Test()
+        {
+            Pessoa_Juridica pessoa = new Pessoa_Juridica();
+            double valor = 100.50;
+            double imposto = pessoa.Pagar_Imposto(valor);
+            double resultado = valor + imposto;
+            Assert.Equal(120.5, resultado);
+        }
+    }
 }
